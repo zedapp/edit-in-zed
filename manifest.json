@@ -1,0 +1,14 @@
+{
+    "name": "Edit in Zed",
+    "description": "Adds edit in Zed buttons to textareas",
+    "version": "0.1",
+    "manifest_version": 2,
+    "content_scripts": [{
+        "matches": ["http://*/*", "https://*/*"],
+        "js": ["add-buttons.js"]
+    }],
+    "background": {
+      "scripts": ["eventPage.js"],
+      "persistent": false
+    }
+}
