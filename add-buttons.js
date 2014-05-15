@@ -14,7 +14,7 @@ function showEditButton(el) {
     var button = document.createElement("img");
     button.setAttribute("src", imgSrc);
     button.setAttribute("title", "Edit in Zed");
-    button.setAttribute("style", "position: absolute; left: " + Math.round(rect.right - 25) + "px; top: " + (rect.bottom + window.scrollY - 25) + "px; cursor: pointer; opacity: 0.8;");
+    button.setAttribute("style", "position: absolute; left: " + Math.round(rect.right - 40) + "px; top: " + (rect.top + window.scrollY + 5) + "px; cursor: pointer; opacity: 0.8;");
     button.onclick = function() {
         // console.log("Contacting Chrome app to edit", el.value);
         var port = chrome.runtime.connect({
