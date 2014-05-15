@@ -16,15 +16,21 @@ function showEditButton(el) {
     button.setAttribute("title", "Edit in Zed");
     button.setAttribute("style", "position: absolute; left: " + Math.round(rect.right - 40) + "px; top: " + (rect.top + window.scrollY + 5) + "px; cursor: pointer; opacity: 0.8;");
     button.onclick = function() {
-        // console.log("Contacting Chrome app to edit", el.value);
+        console.log("Contacting Chrome app to edit", el.value || el.innerText);
+        var setValue = el.value !== undefined;
+
         var port = chrome.runtime.connect({
             name: "edit-textarea"
         });
         port.postMessage({
-            text: el.value
+            text: setValue ? el.value : el.innerText
         });
         port.onMessage.addListener(function(msg) {
-            el.value = msg.text;
+            if(setValue) {
+                el.value = msg.text;
+            } else {
+                el.innerText = msg.text;
+            }
         });
         port.onDisconnect.addListener(function() {
             // console.log("Done editing");
@@ -37,6 +43,8 @@ function showEditButton(el) {
 //addButtons();
 window.addEventListener("mouseover", function(e) {
     if(e.toElement.tagName === "TEXTAREA") {
+        showEditButton(e.toElement);
+    } else if(e.toElement.getAttribute("contenteditable")) {
         showEditButton(e.toElement);
     } else if(e.toElement !== btnEl) {
         if(btnEl) {
