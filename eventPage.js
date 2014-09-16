@@ -7,9 +7,8 @@ chrome.runtime.onConnect.addListener(function(port) {
     var zedPort = chrome.runtime.connect(extId);
 
     port.onMessage.addListener(function(msg) {
-        zedPort.postMessage({
-            text: msg.text
-        });
+        console.log("Got message", msg);
+        zedPort.postMessage(msg);
     });
     zedPort.onMessage.addListener(function(msg) {
         port.postMessage(msg);

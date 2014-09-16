@@ -3,12 +3,12 @@ var imgSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N
 var btnEl = null;
 
 function showEditButton(el) {
-    if(btnEl) {
+    if (btnEl) {
         document.body.removeChild(btnEl);
     }
     var rect = el.getBoundingClientRect();
 
-    if(rect.left === 0 && rect.top === 0) {
+    if (rect.left === 0 && rect.top === 0) {
         return;
     }
     var button = document.createElement("img");
@@ -26,7 +26,7 @@ function showEditButton(el) {
             text: setValue ? el.value : el.innerText
         });
         port.onMessage.addListener(function(msg) {
-            if(setValue) {
+            if (setValue) {
                 el.value = msg.text;
             } else {
                 el.innerText = msg.text;
@@ -42,14 +42,38 @@ function showEditButton(el) {
 
 //addButtons();
 window.addEventListener("mouseover", function(e) {
-    if(e.toElement.tagName === "TEXTAREA") {
+    if (e.toElement.tagName === "TEXTAREA") {
         showEditButton(e.toElement);
-    } else if(e.toElement.getAttribute("contenteditable")) {
+    } else if (e.toElement.getAttribute("contenteditable")) {
         showEditButton(e.toElement);
-    } else if(e.toElement !== btnEl) {
-        if(btnEl) {
+    } else if (e.toElement !== btnEl) {
+        if (btnEl) {
             document.body.removeChild(btnEl);
             btnEl = null;
         }
+    }
+});
+
+window.addEventListener("load", function() {
+    if (location.href.indexOf("https://github.com/") === 0) {
+        var attachEl = document.querySelector("span[aria-label='Create a new file here']");
+        if (attachEl) {
+            var button = document.createElement("img");
+            button.setAttribute("src", imgSrc);
+            button.setAttribute("title", "Edit in Zed");
+            button.setAttribute("style", "position: relative; top: 5px; left: 5px;");
+            button.addEventListener("click", function() {
+                console.log("And now we'll open Zed for", location.href);
+                var port = chrome.runtime.connect({
+                    name: "edit-textarea"
+                });
+                port.postMessage({
+                    url: location.href
+                });
+                // port.disconnect();
+            });
+            attachEl.parentElement.parentElement.appendChild(button);
+        }
+
     }
 });
